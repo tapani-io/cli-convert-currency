@@ -1,7 +1,6 @@
 import requests
 import argparse
 
-
 API = "https://api.exchangerate.host/"
 
 
@@ -26,7 +25,7 @@ def validate_parameters(parameters):
     amount = parameters.amount
     date = parameters.date
 
-    if amount == None:
+    if amount is None:
         amount = 1
 
     data = {
@@ -67,13 +66,13 @@ def get_api_data(url):
 
     response = requests.get(url)
     api_data = response.json()
-    pretty_data = str(api_data["query"]["amount"])  + " " + api_data["query"]["from"] + " is "  + str(api_data["result"]) + " " + api_data["query"]["to"] + " on " + api_data["date"]
+    pretty_data = str(api_data["query"]["amount"]) + " " + api_data["query"]["from"] + " is " + str(
+        api_data["result"]) + " " + api_data["query"]["to"] + " on " + api_data["date"]
 
     return pretty_data
 
 
 def main():
-
     # Get parameters for API request from user input and validate it.
     parameters = validate_parameters(get_parameters())
 
