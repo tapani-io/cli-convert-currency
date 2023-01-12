@@ -1,6 +1,6 @@
-# cli-convert-currency
+# Convertcoin
 
-A very simple command-line program to convert one currency into another. 
+A simple command-line program to convert one currency into another. 
 
 The program uses [ExchangeRate.host](https://exchangerate.host) API for fetching conversion rates.
 
