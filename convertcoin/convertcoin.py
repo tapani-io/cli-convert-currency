@@ -82,7 +82,7 @@ def validate_parameters(parameters):
 
         # Validate that amount is int or float.
         try:
-            amount_ = int(amount_)
+            int(amount_)
         except ValueError:
             try:
                 float(amount_)
@@ -118,20 +118,10 @@ def create_api_url(parameters):
 
     from_ = parameters["from"]
     to_ = parameters["to"]
+    amount_ = parameters["amount"]
+    date_ = parameters["date"]
 
-    url = API + "convert?from=" + from_ + "&to=" + to_
-
-    try:
-        amount = parameters["amount"]
-        url += "&amount=" + str(amount)
-    except KeyError:
-        pass
-
-    try:
-        date_ = parameters["date"]
-        url += "&date=" + str(date_)
-    except KeyError:
-        pass
+    url = API + "convert?from=" + from_ + "&to=" + to_ + "&amount=" + str(amount_) + "&date=" + str(date_)
 
     return url
 
