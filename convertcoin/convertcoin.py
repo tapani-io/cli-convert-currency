@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import requests
 import argparse
 
@@ -41,6 +43,17 @@ def validate_parameters(parameters):
             except ValueError:
                 valid = False
                 break
+
+        # If date is empty: Use today.
+        if date is None:
+            date = datetime.today().strftime("%Y-%m-%d")
+
+        # Validate date input is correctly formatted and within accepted range.
+        try:
+            datetime.strptime(date, "%Y-%m-%d").date()
+        except ValueError:
+            valid = False
+            break
 
         data = {
             "from": from_,
