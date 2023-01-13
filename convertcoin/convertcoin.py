@@ -35,6 +35,12 @@ def validate_parameters(parameters):
     amount_ = parameters.amount
     date_ = parameters.date
 
+    # Dictionary for data.
+    data = {
+        "valid": True,
+        "message": "",
+    }
+
     while True:
 
         # If amount is empty: Use 1.
@@ -48,7 +54,8 @@ def validate_parameters(parameters):
             try:
                 amount_ = float(amount_)
             except ValueError:
-                valid = False
+                data["valid"] = False
+                data["message"] = "Invalid value (amount). Please use only numbers and a floating point."
                 break
 
         # If date is empty: Use today.
@@ -59,22 +66,23 @@ def validate_parameters(parameters):
         try:
             valid_date = datetime.strptime(date_, "%Y-%m-%d").date()
             if not (date(2000, 1, 1) <= valid_date <= (date(TODAY["year"], TODAY["month"], TODAY["day"]))):
-                valid = False
+                data["valid"] = False
+                data["message"] = "Input error. Date not within accepted range."
                 break
         except ValueError:
-            valid = False
+            data["valid"] = False
+            data["message"] = "Input error. Date not accepted. Use format 2000-12-24."
             break
 
-        data = {
-            "from": from_,
-            "to": to_,
-            "amount": amount_,
-            "date": date_
-        }
-        return data
+        break
 
-    if valid is False:
-        return "Not valid"
+    # Append all user input to data dictionary now (because empty amount and date values may have been added).
+    data["from"] = from_
+    data["to"] = to_
+    data["amount"] = amount_
+    data["date"] = date_
+
+    return data
 
 
 def create_api_url(parameters):
@@ -114,15 +122,15 @@ def get_api_data(url):
 def main():
 
     # Get parameters for API request from user input and validate it.
-    parameters = validate_parameters(get_parameters())
+    data = validate_parameters(get_parameters())
 
-    if parameters == "Not valid":
-        print("Input not valid. Try again.")
+    if data["valid"] is False:
+        print(data["message"])
 
     else:
 
         # Generate the full URL for API request.
-        url = create_api_url(parameters)
+        url = create_api_url(data)
 
         # Get data from API.
         api_data = get_api_data(url)
