@@ -1,9 +1,16 @@
-from datetime import datetime
+from datetime import datetime, date
 
 import requests
 import argparse
 
 API = "https://api.exchangerate.host/"
+
+TODAY = {
+    "today": datetime.today().strftime("%Y-%m-%d"),
+    "year": int(datetime.today().strftime("%Y")),
+    "month": int(datetime.today().strftime("%m")),
+    "day": int(datetime.today().strftime("%d")),
+}
 
 
 def get_parameters():
@@ -24,42 +31,45 @@ def validate_parameters(parameters):
 
     # Assign parameters to shorter variables.
     from_ = parameters.from_
-    to = parameters.to
-    amount = parameters.amount
-    date = parameters.date
+    to_ = parameters.to
+    amount_ = parameters.amount
+    date_ = parameters.date
 
     while True:
 
         # If amount is empty: Use 1.
-        if amount is None:
-            amount = "1"
+        if amount_ is None:
+            amount_ = "1"
 
         # Validate that amount is int or float.
         try:
-            amount = int(amount)
+            amount_ = int(amount_)
         except ValueError:
             try:
-                amount = float(amount)
+                amount_ = float(amount_)
             except ValueError:
                 valid = False
                 break
 
         # If date is empty: Use today.
-        if date is None:
-            date = datetime.today().strftime("%Y-%m-%d")
+        if date_ is None:
+            date_ = TODAY["today"]
 
         # Validate date input is correctly formatted and within accepted range.
         try:
-            datetime.strptime(date, "%Y-%m-%d").date()
+            valid_date = datetime.strptime(date_, "%Y-%m-%d").date()
+            if not (date(2022, 1, 1) <= valid_date <= (date(TODAY["year"], TODAY["month"], TODAY["day"]))):
+                valid = False
+                break
         except ValueError:
             valid = False
             break
 
         data = {
             "from": from_,
-            "to": to,
-            "amount": amount,
-            "date": date
+            "to": to_,
+            "amount": amount_,
+            "date": date_
         }
         return data
 
@@ -71,9 +81,9 @@ def create_api_url(parameters):
     """Generate the full URL for API request from user parameters."""
 
     from_ = parameters["from"]
-    to = parameters["to"]
+    to_ = parameters["to"]
 
-    url = API + "convert?from=" + from_ + "&to=" + to
+    url = API + "convert?from=" + from_ + "&to=" + to_
 
     try:
         amount = parameters["amount"]
@@ -82,8 +92,8 @@ def create_api_url(parameters):
         pass
 
     try:
-        date = parameters["date"]
-        url += "&date=" + str(date)
+        date_ = parameters["date"]
+        url += "&date=" + str(date_)
     except KeyError:
         pass
 
