@@ -58,7 +58,7 @@ def validate_parameters(parameters):
         # Validate date input is correctly formatted and within accepted range.
         try:
             valid_date = datetime.strptime(date_, "%Y-%m-%d").date()
-            if not (date(2022, 1, 1) <= valid_date <= (date(TODAY["year"], TODAY["month"], TODAY["day"]))):
+            if not (date(2000, 1, 1) <= valid_date <= (date(TODAY["year"], TODAY["month"], TODAY["day"]))):
                 valid = False
                 break
         except ValueError:
