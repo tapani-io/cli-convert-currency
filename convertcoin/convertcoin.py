@@ -158,13 +158,8 @@ def main():
         print(data["message"])
 
     else:
-
-        # Generate the full URL for API request.
         url = create_api_url(data)
-
-        # Get data from API.
         api_data = get_api_data(url)
-
         print(api_data)
 
 
