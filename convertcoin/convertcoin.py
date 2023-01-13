@@ -45,8 +45,8 @@ def validate_parameters(parameters):
     """Validate the parameters from user input."""
 
     # Assign parameters to shorter variables.
-    from_ = parameters.from_.upper()
-    to_ = parameters.to.upper()
+    from_ = parameters.from_
+    to_ = parameters.to
     amount_ = parameters.amount
     date_ = parameters.date
 
@@ -62,23 +62,40 @@ def validate_parameters(parameters):
 
     while True:
 
-        # Validate that from and to values are accepted.
-        accepted_currencies = get_accepted_currencies()
-
-        if from_ not in accepted_currencies:
+        # Add validation for empty from parameter.
+        if from_ is None:
             data["valid"] = False
-            data["message"] = "Input error (from). Currency not accepted."
+            data["message"] = "Input error (from). Please add a currency to convert from."
             break
 
-        if to_ not in accepted_currencies:
+        # Add validation for empty from parameter.
+        if to_ is None:
             data["valid"] = False
-            data["message"] = "Input error (to). Currency not accepted."
+            data["message"] = "Input error (to). Please add a currency to convert to."
             break
 
         # If amount is empty: Use 1.
         if amount_ is None:
             amount_ = "1"
             data["amount"] = amount_
+
+        # If date is empty: Use today.
+        if date_ is None:
+            date_ = TODAY["today"]
+            data["date"] = date_
+
+        # Validate that from and to values are accepted.
+        accepted_currencies = get_accepted_currencies()
+
+        if from_.upper() not in accepted_currencies:
+            data["valid"] = False
+            data["message"] = "Input error (from). Currency not accepted."
+            break
+
+        if to_.upper() not in accepted_currencies:
+            data["valid"] = False
+            data["message"] = "Input error (to). Currency not accepted."
+            break
 
         # Validate that amount is int or float.
         try:
@@ -90,11 +107,6 @@ def validate_parameters(parameters):
                 data["valid"] = False
                 data["message"] = "Input error (amount). Please use only numbers and a floating point."
                 break
-
-        # If date is empty: Use today.
-        if date_ is None:
-            date_ = TODAY["today"]
-            data["date"] = date_
 
         # Validate date input is correctly formatted and within accepted range.
         try:
