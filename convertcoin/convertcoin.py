@@ -68,7 +68,7 @@ def validate_parameters(parameters):
             data["message"] = "Input error (from). Please add a currency to convert from."
             break
 
-        # Add validation for empty from parameter.
+        # Add validation for empty to parameter.
         if to_ is None:
             data["valid"] = False
             data["message"] = "Input error (to). Please add a currency to convert to."
