@@ -5,7 +5,7 @@ API = "https://api.exchangerate.host/"
 
 
 def get_parameters():
-    """Get parameters from user input for fetching API data."""
+    """Get parameters from user input to fetch API data."""
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--from", dest="from_", action="store")
@@ -20,22 +20,38 @@ def get_parameters():
 def validate_parameters(parameters):
     """Validate the parameters from user input."""
 
+    # Assign parameters to shorter variables.
     from_ = parameters.from_
     to = parameters.to
     amount = parameters.amount
     date = parameters.date
 
-    if amount is None:
-        amount = 1
+    while True:
 
-    data = {
-        "from": from_,
-        "to": to,
-        "amount": amount,
-        "date": date
-    }
+        # If amount is empty: Use 1.
+        if amount is None:
+            amount = "1"
 
-    return data
+        # Validate that amount is int or float.
+        try:
+            amount = int(amount)
+        except ValueError:
+            try:
+                amount = float(amount)
+            except ValueError:
+                valid = False
+                break
+
+        data = {
+            "from": from_,
+            "to": to,
+            "amount": amount,
+            "date": date
+        }
+        return data
+
+    if valid is False:
+        return "Not valid"
 
 
 def create_api_url(parameters):
@@ -73,16 +89,22 @@ def get_api_data(url):
 
 
 def main():
+
     # Get parameters for API request from user input and validate it.
     parameters = validate_parameters(get_parameters())
 
-    # Generate the full URL for API request.
-    url = create_api_url(parameters)
+    if parameters == "Not valid":
+        print("Input not valid. Try again.")
 
-    # Get data from API.
-    api_data = get_api_data(url)
+    else:
 
-    print(api_data)
+        # Generate the full URL for API request.
+        url = create_api_url(parameters)
+
+        # Get data from API.
+        api_data = get_api_data(url)
+
+        print(api_data)
 
 
 if __name__ == "__main__":
