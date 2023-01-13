@@ -39,6 +39,10 @@ def validate_parameters(parameters):
     data = {
         "valid": True,
         "message": "",
+        "from": from_,
+        "to":  to_,
+        "amount": amount_,
+        "date": date_
     }
 
     while True:
@@ -46,6 +50,7 @@ def validate_parameters(parameters):
         # If amount is empty: Use 1.
         if amount_ is None:
             amount_ = "1"
+            data["amount"] = amount_
 
         # Validate that amount is int or float.
         try:
@@ -61,6 +66,7 @@ def validate_parameters(parameters):
         # If date is empty: Use today.
         if date_ is None:
             date_ = TODAY["today"]
+            data["date"] = date_
 
         # Validate date input is correctly formatted and within accepted range.
         try:
@@ -75,12 +81,6 @@ def validate_parameters(parameters):
             break
 
         break
-
-    # Append all user input to data dictionary now (because empty amount and date values may have been added).
-    data["from"] = from_
-    data["to"] = to_
-    data["amount"] = amount_
-    data["date"] = date_
 
     return data
 
