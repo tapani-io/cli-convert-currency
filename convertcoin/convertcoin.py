@@ -4,6 +4,7 @@ import requests
 import argparse
 
 API = "https://api.exchangerate.host/"
+API_CURRENCIES = "https://api.exchangerate.host/symbols"
 
 TODAY = {
     "today": datetime.today().strftime("%Y-%m-%d"),
@@ -24,6 +25,20 @@ def get_parameters():
     args = parser.parse_args()
 
     return args
+
+
+def get_accepted_currencies():
+
+    list_ = []
+
+    url = API_CURRENCIES
+    response = requests.get(url)
+    api_data = response.json()
+
+    for key in api_data["symbols"]:
+        list_.append(key)
+
+    return list_
 
 
 def validate_parameters(parameters):
@@ -60,7 +75,7 @@ def validate_parameters(parameters):
                 amount_ = float(amount_)
             except ValueError:
                 data["valid"] = False
-                data["message"] = "Invalid value (amount). Please use only numbers and a floating point."
+                data["message"] = "Input error (amount). Please use only numbers and a floating point."
                 break
 
         # If date is empty: Use today.
@@ -73,11 +88,11 @@ def validate_parameters(parameters):
             valid_date = datetime.strptime(date_, "%Y-%m-%d").date()
             if not (date(2000, 1, 1) <= valid_date <= (date(TODAY["year"], TODAY["month"], TODAY["day"]))):
                 data["valid"] = False
-                data["message"] = "Input error. Date not within accepted range."
+                data["message"] = "Input error (date). Date not within accepted range."
                 break
         except ValueError:
             data["valid"] = False
-            data["message"] = "Input error. Date not accepted. Use format 2000-12-24."
+            data["message"] = "Input error (date). Date not accepted. Use format 2000-12-24."
             break
 
         break
