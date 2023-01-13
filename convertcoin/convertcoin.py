@@ -45,8 +45,8 @@ def validate_parameters(parameters):
     """Validate the parameters from user input."""
 
     # Assign parameters to shorter variables.
-    from_ = parameters.from_
-    to_ = parameters.to
+    from_ = parameters.from_.upper()
+    to_ = parameters.to.upper()
     amount_ = parameters.amount
     date_ = parameters.date
 
@@ -62,6 +62,19 @@ def validate_parameters(parameters):
 
     while True:
 
+        # Validate that from and to values are accepted.
+        accepted_currencies = get_accepted_currencies()
+
+        if from_ not in accepted_currencies:
+            data["valid"] = False
+            data["message"] = "Input error (from). Currency not accepted."
+            break
+
+        if to_ not in accepted_currencies:
+            data["valid"] = False
+            data["message"] = "Input error (to). Currency not accepted."
+            break
+
         # If amount is empty: Use 1.
         if amount_ is None:
             amount_ = "1"
@@ -72,7 +85,7 @@ def validate_parameters(parameters):
             amount_ = int(amount_)
         except ValueError:
             try:
-                amount_ = float(amount_)
+                float(amount_)
             except ValueError:
                 data["valid"] = False
                 data["message"] = "Input error (amount). Please use only numbers and a floating point."
