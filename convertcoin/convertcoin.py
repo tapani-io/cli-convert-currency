@@ -62,13 +62,13 @@ def validate_parameters(parameters):
 
     while True:
 
-        # Add validation for empty from parameter.
+        # Add validation for empty 'from' parameter.
         if from_ is None:
             data["valid"] = False
             data["message"] = "Input error (from). Please add a currency to convert from."
             break
 
-        # Add validation for empty to parameter.
+        # Add validation for empty 'to' parameter.
         if to_ is None:
             data["valid"] = False
             data["message"] = "Input error (to). Please add a currency to convert to."
@@ -107,6 +107,12 @@ def validate_parameters(parameters):
                 data["valid"] = False
                 data["message"] = "Input error (amount). Please use only numbers and a floating point."
                 break
+
+        # Validate that amount is within accepted limit.
+        if len(amount_) > 20:
+            data["valid"] = False
+            data["message"] = "Input error (amount). Too large number."
+            break
 
         # Validate date input is correctly formatted and within accepted range.
         try:
